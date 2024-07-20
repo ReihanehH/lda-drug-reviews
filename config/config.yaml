@@ -1,0 +1,17 @@
+data:
+  train:
+    enable-caching: true
+    path: ./datasets/drugsComTrain_raw.csv
+    sampling:
+      number: 5100
+      seed: 42
+dtm:
+  min-df-threshold: 0.005
+lda:
+  enable-traning: true
+  topics: 3
+  iterations: 3
+  alpha: 0.1
+  beta: 0.01
+result:
+  top-words: 10
