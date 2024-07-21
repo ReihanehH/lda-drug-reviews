@@ -2,36 +2,24 @@
 
 ## How to run
 
-1. Prepare machine dependencies like
+1. Machine dependencies (linux, osx)
     - python3
-    - virtualenv
+    - make
 
-        ```bash
-        pip install virtualenv
-        ```
-
-2. Create a virtual environment using `virtualenv`
+2. Run the main function
 
     ```bash
-    virtualenv venv -p python3.9
+    make run-main
     ```
 
-3. Activate the virtual environment
+## To run the tests
 
-    ```bash
-    source venv/bin/activate
-    ```
+```bash
+make run-tests
+```
 
-4. Install code dependencies
+## To cleanup
 
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-5. Edit the config file from `config/config.yaml`
-
-6. Run the main.py
-
-    ```bash
-    python main.py
-    ```
+```bash
+make cleanup
+```
