@@ -29,7 +29,7 @@ class TestLDA(unittest.TestCase):
         ]
 
         self.vectorizer = CountVectorizer()
-        self.dtm = self.vectorizer.fit_transform(self.corpus)
+        self.dtm = self.vectorizer.fit_transform(self.corpus).toarray()
 
     def test_initialization(self):
         self.assertEqual(self.lda.num_topics, self.num_topics)
