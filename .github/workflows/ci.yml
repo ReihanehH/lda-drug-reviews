@@ -25,8 +25,8 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install dependencies
-        run: make setup install-deps
+      # - name: install-dependencies
+      #   run: make install-dependencies
 
       - name: Run tests
         run: make run-tests
