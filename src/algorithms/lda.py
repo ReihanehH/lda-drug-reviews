@@ -52,7 +52,8 @@ class LDA:
 
         num_docs, num_words = dtm.shape
 
-        documents = [list(np.nonzero(doc)[1]) for doc in dtm]
+        documents = [np.nonzero(doc)[0] for doc in dtm]
+
         doc_topic_counts = np.zeros((num_docs, self.num_topics)) + self.alpha
         self.topic_word_counts = np.zeros((self.num_topics, num_words)) + self.beta
         topic_counts = np.zeros(self.num_topics) + num_words * self.beta

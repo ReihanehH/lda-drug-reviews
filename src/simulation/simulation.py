@@ -10,8 +10,8 @@ from nltk.stem import PorterStemmer
 from PIL import Image
 from sklearn.feature_extraction.text import CountVectorizer
 
-from algorithms.lda import LDA
-from config.yaml import load_yaml_config
+from src.algorithms.lda import LDA
+from src.config.yaml import load_yaml_config
 
 
 class Simulation:
@@ -52,7 +52,7 @@ class Simulation:
         os.makedirs(self.models_dir, exist_ok=True)
         os.makedirs(self.results_dir, exist_ok=True)
 
-    def __clean_text_df(self, df: pd.DataFrame) -> pd.DataFrame:
+    def clean_text_df(self, df: pd.DataFrame) -> pd.DataFrame:
         """
         Clean the text data in the given DataFrame.
 
@@ -90,14 +90,14 @@ class Simulation:
         )
         return result
 
-    def __create_train_df(
+    def create_train_df(
         self,
         dataset_path: str,
         num_of_samples: int = -1,
         frac_of_samples: float = -1.0,
         sampling_seed: int = 42,
         cache_enabled: bool = False,
-    ) -> pd.DataFrame:
+    ) -> pd.Series:
         """
         Create a clean training DataFrame.
 
@@ -109,7 +109,7 @@ class Simulation:
             cache_enabled (bool, optional): Whether to enable caching. Defaults to False.
 
         Returns:
-            pd.DataFrame: The clean training DataFrame.
+            pd.Series: The clean training Series.
         """
 
         if num_of_samples != -1 and frac_of_samples != -1.0:
@@ -138,7 +138,7 @@ class Simulation:
         print("Loading and cleaning data from scratch (it may take a while)")
         # Load DataFrame from the dataset path and clean the review column and sample the data based on the given parameters
         df = pd.read_csv(dataset_path)
-        df[clean_review_col_name] = self.__clean_text_df(df["review"])
+        df[clean_review_col_name] = self.clean_text_df(df["review"])
         if num_of_samples != -1:
             df = df.sample(n=num_of_samples, random_state=sampling_seed)
         elif frac_of_samples != -1.0:
@@ -154,7 +154,7 @@ class Simulation:
 
         return df[clean_review_col_name]
 
-    def __create_train_dtm(
+    def create_train_dtm(
         self, df: pd.DataFrame, min_df_threshold: int = 0
     ) -> Tuple[np.ndarray, np.ndarray]:
         """
@@ -168,11 +168,11 @@ class Simulation:
             Tuple[np.ndarray, np.ndarray]: The Document-Term Matrix (DTM) and the vocabulary.
         """
         vectorizer = CountVectorizer(min_df=min_df_threshold)
-        dtm = vectorizer.fit_transform(df)
+        dtm = vectorizer.fit_transform(df).toarray()
         vocab = vectorizer.get_feature_names_out()
         return dtm, vocab
 
-    def __generate_results(
+    def generate_results(
         self,
         topic_word_counts: np.ndarray,
         vocab: np.ndarray,
@@ -265,7 +265,7 @@ class Simulation:
         """
 
         # Create a clean dataframe of reviews
-        reviews_df = self.__create_train_df(
+        reviews_df = self.create_train_df(
             dataset_path=self.config.data.train.path,
             num_of_samples=self.config.data.train.sampling.number,
             sampling_seed=self.config.data.train.sampling.seed,
@@ -273,7 +273,7 @@ class Simulation:
         )
 
         # Create DTM and vocab
-        dtm, vocab = self.__create_train_dtm(
+        dtm, vocab = self.create_train_dtm(
             df=reviews_df, min_df_threshold=self.config.dtm.min_df_threshold
         )
         print(f"DTM shape: {dtm.shape}")
@@ -296,7 +296,7 @@ class Simulation:
         result_image_path = os.path.join(self.results_dir, f"{lda.get_model_id()}.png")
 
         # Generate the results using the __generate_results method
-        self.__generate_results(
+        self.generate_results(
             topic_word_counts=lda.topic_word_counts,
             vocab=vocab,
             image_path=result_image_path,
