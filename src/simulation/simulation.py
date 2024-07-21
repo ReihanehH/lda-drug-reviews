@@ -5,6 +5,7 @@ from typing import Tuple
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from nltk import download
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from PIL import Image
@@ -51,6 +52,8 @@ class Simulation:
         os.makedirs(self.cache_dir, exist_ok=True)
         os.makedirs(self.models_dir, exist_ok=True)
         os.makedirs(self.results_dir, exist_ok=True)
+        # Make sure to have stopwords
+        download("stopwords")
 
     def clean_text_df(self, df: pd.DataFrame) -> pd.DataFrame:
         """
