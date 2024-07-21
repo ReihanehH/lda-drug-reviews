@@ -1,4 +1,4 @@
-from simulation.simulation import Simulation
+from src.simulation.simulation import Simulation
 
 
 def main() -> None:

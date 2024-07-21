@@ -33,5 +33,5 @@
 6. Run the main.py
 
     ```bash
-    python3 src/main.py
+    python main.py
     ```
