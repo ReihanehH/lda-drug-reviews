@@ -1,3 +1,4 @@
+import os
 import unittest
 from unittest.mock import MagicMock, patch
 
@@ -112,6 +113,96 @@ class TestSimulation(unittest.TestCase):
         mock_makedirs.assert_any_call("/tmp/models", exist_ok=True)
         mock_makedirs.assert_any_call("/tmp/results", exist_ok=True)
         self.assertEqual(mock_makedirs.call_count, 3)
+
+    @patch("src.simulation.simulation.LDA")
+    def test_train_or_load_lda_model_training_enabled(self, MockLDA):
+        """
+        Test the train_or_load_lda_model method when training is enabled.
+
+        This test verifies that the LDA model is trained and saved correctly when
+        the enable_training configuration is set to True. It checks that the LDA
+        instance is created with the correct parameters, the fit method is called
+        with the document-term matrix, and the save_model method is called with the
+        correct path. Additionally, it ensures that the returned LDA model is the
+        mock instance.
+        """
+        # Create a mock LDA instance
+        mock_lda = MockLDA.return_value
+        mock_lda.get_model_id.return_value = "mock_model_id"
+
+        # Create a mock configuration
+        mock_config = MagicMock()
+        mock_config.lda.topics = 10
+        mock_config.lda.iterations = 100
+        mock_config.lda.alpha = 0.1
+        mock_config.lda.beta = 0.01
+        mock_config.lda.models_dir_path = "/mock/path"
+        mock_config.lda.enable_traning = True
+
+        # Create a sample document-term matrix
+        dtm = np.array([[1, 2, 3], [4, 5, 6]])
+
+        # Create an instance of the Simulation class
+        simulation_instance = Simulation()
+        simulation_instance.config = mock_config
+
+        # Call the method
+        lda_model = simulation_instance.train_or_load_lda_model(dtm)
+
+        # Check if the fit method was called with the document-term matrix
+        mock_lda.fit.assert_called_once_with(dtm)
+
+        # Check if the save_model method was called with the correct path
+        expected_model_path = os.path.join("/mock/path", "mock_model_id.pkl")
+        mock_lda.save_model.assert_called_once_with(expected_model_path)
+
+        # Check if the returned lda_model is the mock instance
+        self.assertEqual(lda_model, mock_lda)
+
+    @patch("src.simulation.simulation.LDA")
+    def test_train_or_load_lda_model_training_disabled(self, MockLDA):
+        """
+        Test the train_or_load_lda_model method when training is disabled.
+
+        This test verifies that the LDA model is loaded correctly when the
+        enable_training configuration is set to False. It checks that the LDA
+        instance's load_model method is called with the correct path, and ensures
+        that the fit and save_model methods are not called. Additionally, it
+        confirms that the returned LDA model is the mock instance.
+        """
+        # Create a mock LDA instance
+        mock_lda = MockLDA.return_value
+        mock_lda.get_model_id.return_value = "mock_model_id"
+
+        # Create a mock configuration
+        mock_config = MagicMock()
+        mock_config.lda.topics = 10
+        mock_config.lda.iterations = 100
+        mock_config.lda.alpha = 0.1
+        mock_config.lda.beta = 0.01
+        mock_config.lda.models_dir_path = "/mock/path"
+        mock_config.lda.enable_traning = False
+
+        # Create a sample document-term matrix
+        dtm = np.array([[1, 2, 3], [4, 5, 6]])
+
+        # Create an instance of the Simulation class
+        simulation_instance = Simulation()
+        simulation_instance.config = mock_config
+
+        # Call the method
+        lda_model = simulation_instance.train_or_load_lda_model(dtm)
+
+        # Check if the load_model method was called with the correct path
+        expected_model_path = os.path.join("/mock/path", "mock_model_id.pkl")
+        mock_lda.load_model.assert_called_once_with(expected_model_path)
+
+        # Check if the fit and save_model methods were not called
+        mock_lda.fit.assert_not_called()
+        mock_lda.save_model.assert_not_called()
+
+        # Check if the returned lda_model is the mock instance
+        self.assertEqual(lda_model, mock_lda)
 
 
 if __name__ == "__main__":
