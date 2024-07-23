@@ -21,10 +21,14 @@ class TrainConfig(BaseModel):
 
     Attributes:
         path (str): Training data path.
+        cache_dir_path (str): Cache directory path.
         enable_caching (bool): Flag to enable caching of cleaned train data.
         sampling (SamplingConfig): Sampling configuration.
     """
 
+    cache_dir_path: str = Field(
+        default="./cache", alias="cache-dir-path", description="Cache directory path"
+    )
     path: str = Field(..., description="Training data path")
     enable_caching: bool = Field(
         default=True, alias="enable-caching", description="Cache cleaned train data"
@@ -70,6 +74,7 @@ class LDAConfig(BaseModel):
     Attributes:
         enable_traning (bool): Flag to enable LDA training.
             Set this to True to enable training the LDA model, or False to disable training.
+        models_dir_path (str): Models directory path.
         topics (int): Number of topics.
             Specifies the desired number of topics for the LDA model.
         iterations (int): Number of iterations.
@@ -83,6 +88,9 @@ class LDAConfig(BaseModel):
     enable_traning: bool = Field(
         default=True, alias="enable-traning", description="Enable LDA training"
     )
+    models_dir_path: str = Field(
+        default="./models", alias="models-dir-path", description="Models directory path"
+    )
     topics: int = Field(default=3, description="Number of topics")
     iterations: int = Field(default=5, description="Number of iterations")
     alpha: float = Field(default=0.1, description="Alpha value")
@@ -94,10 +102,16 @@ class ResultConfig(BaseModel):
     Configuration class for storing result settings.
 
     Attributes:
+        results_dir_path (str): Results directory path.
         top_words (int): Number of top words to display. Default is 10.
 
     """
 
+    results_dir_path: str = Field(
+        default="./results",
+        alias="results-dir-path",
+        description="Results directory path",
+    )
     top_words: int = Field(
         default=10, alias="top-words", description="Number of top words to display"
     )

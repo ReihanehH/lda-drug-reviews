@@ -31,11 +31,13 @@ class TestConfig(unittest.TestCase):
         sampling_config = SamplingConfig(**{"number": 10, "seed": 123})
         config = TrainConfig(
             **{
+                "cache-dir-path": "/tmp/cache",
                 "path": "data/train",
                 "enable-caching": False,
                 "sampling": sampling_config,
             }
         )
+        self.assertEqual(config.cache_dir_path, "/tmp/cache")
         self.assertEqual(config.path, "data/train")
         self.assertFalse(config.enable_caching)
         self.assertEqual(config.sampling, sampling_config)
@@ -43,6 +45,7 @@ class TestConfig(unittest.TestCase):
         with self.assertRaises(ValidationError):
             TrainConfig(
                 **{
+                    "cache-dir-path": "/tmp/cache",
                     "path": "data/train",
                     "enable-caching": False,
                     "sampling": "invalid",
@@ -72,6 +75,7 @@ class TestConfig(unittest.TestCase):
         config = LDAConfig(
             **{
                 "enable-traning": True,
+                "models-dir-path": "/tmp/models",
                 "topics": 5,
                 "iterations": 100,
                 "alpha": 0.5,
@@ -79,6 +83,7 @@ class TestConfig(unittest.TestCase):
             }
         )
         self.assertTrue(config.enable_traning)
+        self.assertEqual(config.models_dir_path, "/tmp/models")
         self.assertEqual(config.topics, 5)
         self.assertEqual(config.iterations, 100)
         self.assertEqual(config.alpha, 0.5)
@@ -88,6 +93,7 @@ class TestConfig(unittest.TestCase):
             LDAConfig(
                 **{
                     "enable-traning": True,
+                    "models-dir-path": "/tmp/models",
                     "topics": 5.4,
                     "iterations": 100,
                     "alpha": 0.5,
@@ -96,11 +102,12 @@ class TestConfig(unittest.TestCase):
             )
 
     def test_result_config(self):
-        config = ResultConfig(**{"top-words": 20})
+        config = ResultConfig(**{"results-dir-path": "/tmp/results", "top-words": 20})
+        self.assertEqual(config.results_dir_path, "/tmp/results")
         self.assertEqual(config.top_words, 20)
 
         with self.assertRaises(ValidationError):
-            ResultConfig(**{"top-words": "invalid"})
+            ResultConfig(**{"results-dir-path": "/tmp/results", "top-words": "invalid"})
 
     def test_config(self):
         sampling_config = SamplingConfig(**{"number": 10, "seed": 123})
@@ -153,18 +160,20 @@ class TestConfig(unittest.TestCase):
                 "train": {
                     "path": "data/train",
                     "enable-caching": False,
+                    "cache-dir-path": "/tmp/cache",
                     "sampling": {"number": 10, "seed": 123},
                 }
             },
             "dtm": {"min-df-threshold": 0.01},
             "lda": {
                 "enable-traning": True,
+                "models-dir-path": "/tmp/models",
                 "topics": 5,
                 "iterations": 100,
                 "alpha": 0.5,
                 "beta": 0.1,
             },
-            "result": {"top-words": 20},
+            "result": {"results-dir-path": "/tmp/results", "top-words": 20},
         }
 
         with tempfile.NamedTemporaryFile("w", delete=False) as temp_file:
@@ -172,16 +181,19 @@ class TestConfig(unittest.TestCase):
             temp_file.close()
             config = load_yaml_config(temp_file.name)
             self.assertEqual(config.data.train.path, "data/train")
+            self.assertEqual(config.data.train.cache_dir_path, "/tmp/cache")
             self.assertFalse(config.data.train.enable_caching)
             self.assertEqual(config.data.train.sampling.number, 10)
             self.assertEqual(config.data.train.sampling.seed, 123)
             self.assertEqual(config.dtm.min_df_threshold, 0.01)
             self.assertTrue(config.lda.enable_traning)
+            self.assertEqual(config.lda.models_dir_path, "/tmp/models")
             self.assertEqual(config.lda.topics, 5)
             self.assertEqual(config.lda.iterations, 100)
             self.assertEqual(config.lda.alpha, 0.5)
             self.assertEqual(config.lda.beta, 0.1)
             self.assertEqual(config.result.top_words, 20)
+            self.assertEqual(config.result.results_dir_path, "/tmp/results")
             os.remove(temp_file.name)
 
         with self.assertRaises(FileNotFoundError):

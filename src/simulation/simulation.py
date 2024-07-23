@@ -23,37 +23,26 @@ class Simulation:
     It performs data loading, data cleaning, topic modeling, and result generation.
 
     Attributes:
-        cache_dir (str): The directory path for caching.
         models_dir (str): The directory path for storing models.
         results_dir (str): The directory path for storing results.
         config (dict): The configuration dictionary.
     """
 
-    def __init__(self, config_path: str) -> None:
+    def __init__(
+        self,
+        config_path: str = "./config/config.yaml",
+    ) -> None:
         """
         Initialize the Simulation object.
 
         Args:
-            config_path (str): The path to the configuration file.
-
+            config_path (str): The path to the configuration file. Defaults to "./config/config.yaml".
         Returns:
             None
         """
 
-        # Define the directories
-        self.cache_dir = "./cache"
-        self.models_dir = "./models"
-        self.results_dir = "./results"
-
         # Load the configuration
         self.config = load_yaml_config(config_path)
-
-        # Make sure the directories exist
-        os.makedirs(self.cache_dir, exist_ok=True)
-        os.makedirs(self.models_dir, exist_ok=True)
-        os.makedirs(self.results_dir, exist_ok=True)
-        # Make sure to have stopwords
-        download("stopwords")
 
     def clean_text_df(self, df: pd.DataFrame) -> pd.DataFrame:
         """
@@ -100,6 +89,7 @@ class Simulation:
         frac_of_samples: float = -1.0,
         sampling_seed: int = 42,
         cache_enabled: bool = False,
+        cache_dir_path: str = "./cache",
     ) -> pd.Series:
         """
         Create a clean training DataFrame.
@@ -110,6 +100,7 @@ class Simulation:
             frac_of_samples (float, optional): The fraction of samples to include in the training DataFrame. Defaults to -1.0.
             sampling_seed (int, optional): The seed for random sampling. Defaults to 42.
             cache_enabled (bool, optional): Whether to enable caching. Defaults to False.
+            cache_dir_path (str): The path to the cache directory file. Defaults to "./cache".
 
         Returns:
             pd.Series: The clean training Series.
@@ -127,7 +118,7 @@ class Simulation:
         cache_hash = hashlib.sha1(
             f"{dataset_path}-{num_of_samples}-{frac_of_samples}-{sampling_seed}".encode()
         ).hexdigest()
-        df_cache_path = os.path.join(self.cache_dir, f"{cache_hash}.pkl")
+        df_cache_path = os.path.join(cache_dir_path, f"{cache_hash}.pkl")
 
         # Check if the cache file exists and load it if it does
         if cache_enabled:
@@ -267,12 +258,21 @@ class Simulation:
             None
         """
 
+        # Make sure to have stopwords
+        download("stopwords")
+
+        # Make sure that cache, models and results directory exist.
+        os.makedirs(self.config.data.train.cache_dir_path, exist_ok=True)
+        os.makedirs(self.config.lda.models_dir_path, exist_ok=True)
+        os.makedirs(self.config.result.results_dir_path, exist_ok=True)
+
         # Create a clean dataframe of reviews
         reviews_df = self.create_train_df(
             dataset_path=self.config.data.train.path,
             num_of_samples=self.config.data.train.sampling.number,
             sampling_seed=self.config.data.train.sampling.seed,
             cache_enabled=self.config.data.train.enable_caching,
+            cache_dir_path=self.config.data.train.cache_dir_path,
         )
 
         # Create DTM and vocab
@@ -288,7 +288,9 @@ class Simulation:
             alpha=self.config.lda.alpha,
             beta=self.config.lda.beta,
         )
-        lda_model_path = os.path.join(self.models_dir, f"{lda.get_model_id()}.pkl")
+        lda_model_path = os.path.join(
+            self.config.lda.models_dir_path, f"{lda.get_model_id()}.pkl"
+        )
         if self.config.lda.enable_traning:
             lda.fit(dtm)
             lda.save_model(lda_model_path)
@@ -296,7 +298,9 @@ class Simulation:
             lda.load_model(lda_model_path)
 
         # Set the path for the result image
-        result_image_path = os.path.join(self.results_dir, f"{lda.get_model_id()}.png")
+        result_image_path = os.path.join(
+            self.config.result.results_dir_path, f"{lda.get_model_id()}.png"
+        )
 
         # Generate the results using the __generate_results method
         self.generate_results(
