@@ -15,6 +15,14 @@ class TestSimulation(unittest.TestCase):
 
     @patch("src.config.yaml.load_yaml_config")
     def test_clean_text_df(self, mock_load_yaml_config):
+        """
+        Test the clean_text_df method.
+
+        This test verifies that the clean_text_df method correctly processes
+        a DataFrame of text data by cleaning the text. It mocks the YAML configuration
+        loading to avoid external dependencies. The test checks that the resulting
+        cleaned DataFrame matches the expected output for given sample input data.
+        """
         # Sample input data
         sample_data = {"text": ["This is a test.", "Another test case."]}
         sample_df = pd.DataFrame(sample_data)
@@ -35,6 +43,15 @@ class TestSimulation(unittest.TestCase):
     @patch("src.config.yaml.load_yaml_config")
     @patch("pandas.read_csv")
     def test_create_train_df(self, mock_read_csv, mock_load_yaml_config):
+        """
+        Test the create_train_df method.
+
+        This test verifies that the create_train_df method correctly processes
+        a CSV file into a cleaned series of reviews. It mocks the YAML configuration
+        loading and the pandas read_csv function to avoid external dependencies.
+        The test checks that the resulting cleaned series of reviews matches the
+        expected output for given sample input data.
+        """
         # Sample input data
         sample_data = {
             "review": ["This is a test.", "Another test case."],
@@ -63,6 +80,15 @@ class TestSimulation(unittest.TestCase):
 
     @patch("src.config.yaml.load_yaml_config")
     def test_create_train_dtm(self, mock_load_yaml_config):
+        """
+        Test the create_train_dtm method.
+
+        This test verifies that the create_train_dtm method correctly processes
+        a series of text data into a document-term matrix (DTM) and a vocabulary list.
+        It mocks the YAML configuration loading to avoid external dependencies.
+        The test checks that the resulting DTM and vocabulary match the expected
+        output for given sample input data.
+        """
         # Sample input data
         sample_data = pd.Series(["test.", "anoth test case."], name="clean_review")
 
