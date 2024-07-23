@@ -26,11 +26,11 @@ The `simulation` exposes several parameters to the user that influence the clust
 ### Training Data parameters
 
 1. `enable-caching` (default: `true`): This field specifies whether clean training data should be cached. Sometimes, the training data is already cleaned and stored in the cache directory. In such cases, we set this parameter to `true` to load the cached data. If the cache does not exist and this parameter is set to `true`, the data will be cleaned, and the results will be saved to a file in the `cache` directory. However, if this parameter is set to false, the uncleaned training data will be loaded and cleaned without saving the cleaned data to the cache directory.
+2. `cache-dir-path` (default `./cache`) Cache directory path for cleaned training data.
+3. Sampling:  
+    3.1. `number` (default: `-1`): number of samples that we consider in dataset. The `-1` means all the data.
 
-2. Sampling:  
-    2.1. `number` (default: `-1`): number of samples that we consider in dataset. The `-1` means all the data.
-
-    2.2. `seed` (default: `42`): We do sampling based on this randomize seed.
+    3.2. `seed` (default: `42`): We do sampling based on this randomize seed.
 
 ### DTM parameters
 
@@ -40,14 +40,16 @@ words that are used less than %0.5 are removed from the columns of DTM.
 ### LDA parameters
 
 1. `enable-traning` (default: `true`): This field specifies whether training should be done or not. There are times when we already have the model (stored in the models directory) and we just want to run the model and see the results, in this case we leave this part `false`. But if this part is `true`, model will be trained from the beginning.
-2. `num_topics` (default: `3`): The number of clusters or topics to identify within the data.
-3. `iterations` (default: `1000`): The number of iterations over each document.
-4. `alpha` (default: `0.1`): A hyperparameter that influences the sparsity of the topic distribution over documents.
-5. `beta` (default: `0.01`): A hyperparameter that plays a crucial role in shaping the topic distributions.
+2. `models-dir-path` (default `./models`): Models directory path to persist result of trained models as a pickle formated file.
+3. `num_topics` (default: `3`): The number of clusters or topics to identify within the data.
+4. `iterations` (default: `1000`): The number of iterations over each document.
+5. `alpha` (default: `0.1`): A hyperparameter that influences the sparsity of the topic distribution over documents.
+6. `beta` (default: `0.01`): A hyperparameter that plays a crucial role in shaping the topic distributions.
 
 ### Result parameters
 
- 1. `top-words` (default: `10`): number of the words that we chose to show as result.
+1. `results-dir-path` (default `./results`): Results directory path to persist image of final tables as a png picture.
+2. `top-words` (default: `10`): number of the words that we chose to show as result.
 
 ## Implementation
 
