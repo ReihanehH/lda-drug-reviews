@@ -81,25 +81,36 @@ class TestSimulation(unittest.TestCase):
         np.testing.assert_array_equal(result_dtm, dtm)
         np.testing.assert_array_equal(result_vocab, vocab)
 
-    # @patch("os.makedirs")
-    # def test_ensure_directories_exist(self, mock_makedirs):
-    #     # Create a mock configuration
-    #     mock_config = MagicMock()
-    #     mock_config.data.train.cache_dir_path = "/tmp/cache"
-    #     mock_config.lda.models_dir_path = "/tmp/models"
-    #     mock_config.result.results_dir_path = "/tmp/results"
+    @patch("os.makedirs")
+    def test_ensure_directories_exist(self, mock_makedirs):
+        """
+        Test the ensure_directories_exist method of the Simulation class.
 
-    #     # Create an instance of the Simulation class with the mock configuration
-    #     simulation = Simulation(config_path=mock_config)
+        This test verifies that the ensure_directories_exist method correctly creates
+        the necessary directories for caching, models, and results. It uses the unittest.mock
+        library to patch the os.makedirs function and check that it is called with the correct
+        paths and the exist_ok=True argument.
 
-    #     # Call the method to test
-    #     simulation.ensure_directories_exist()
+        Args:
+            mock_makedirs (MagicMock): Mocked version of os.makedirs.
+        """
+        # Create a mock configuration
+        mock_config = MagicMock()
+        mock_config.data.train.cache_dir_path = "/tmp/cache"
+        mock_config.lda.models_dir_path = "/tmp/models"
+        mock_config.result.results_dir_path = "/tmp/results"
 
-    #     # Assert that os.makedirs was called with the correct paths and exist_ok=True
-    #     mock_makedirs.assert_any_call("/tmp/cache", exist_ok=True)
-    #     mock_makedirs.assert_any_call("/tmp/models", exist_ok=True)
-    #     mock_makedirs.assert_any_call("/tmp/results", exist_ok=True)
-    #     self.assertEqual(mock_makedirs.call_count, 3)
+        # Create an instance of the Simulation class with the mock configuration
+        simulation = Simulation(config=mock_config)
+
+        # Call the method to test
+        simulation.ensure_directories_exist()
+
+        # Assert that os.makedirs was called with the correct paths and exist_ok=True
+        mock_makedirs.assert_any_call("/tmp/cache", exist_ok=True)
+        mock_makedirs.assert_any_call("/tmp/models", exist_ok=True)
+        mock_makedirs.assert_any_call("/tmp/results", exist_ok=True)
+        self.assertEqual(mock_makedirs.call_count, 3)
 
 
 if __name__ == "__main__":

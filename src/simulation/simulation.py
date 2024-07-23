@@ -255,10 +255,26 @@ class Simulation:
             None
         """
         self.ensure_directories_exist()
-        reviews_df = self.create_clean_dataframe()
-        dtm, vocab = self.create_dtm_and_vocab(reviews_df)
+        reviews_df = self.create_train_df(
+            dataset_path=self.config.data.train.path,
+            num_of_samples=self.config.data.train.sampling.number,
+            sampling_seed=self.config.data.train.sampling.seed,
+            cache_enabled=self.config.data.train.enable_caching,
+            cache_dir_path=self.config.data.train.cache_dir_path,
+        )
+        dtm, vocab = self.create_train_dtm(
+            df=reviews_df, min_df_threshold=self.config.dtm.min_df_threshold
+        )
         lda = self.train_or_load_lda_model(dtm)
-        self.generate_results_image(lda, vocab)
+        self.generate_results(
+            topic_word_counts=lda.topic_word_counts,
+            vocab=vocab,
+            image_path=os.path.join(
+                self.config.result.results_dir_path, f"{lda.get_model_id()}.png"
+            ),
+            image_text=lda.get_model_id(),
+            num_of_top_words=self.config.result.top_words,
+        )
 
     def ensure_directories_exist(self) -> None:
         """
@@ -270,39 +286,6 @@ class Simulation:
         os.makedirs(self.config.data.train.cache_dir_path, exist_ok=True)
         os.makedirs(self.config.lda.models_dir_path, exist_ok=True)
         os.makedirs(self.config.result.results_dir_path, exist_ok=True)
-
-    def create_clean_dataframe(self) -> pd.DataFrame:
-        """
-        Create a clean dataframe of reviews.
-
-        Returns:
-            pd.DataFrame: Cleaned dataframe of reviews.
-        """
-        return self.create_train_df(
-            dataset_path=self.config.data.train.path,
-            num_of_samples=self.config.data.train.sampling.number,
-            sampling_seed=self.config.data.train.sampling.seed,
-            cache_enabled=self.config.data.train.enable_caching,
-            cache_dir_path=self.config.data.train.cache_dir_path,
-        )
-
-    def create_dtm_and_vocab(
-        self, reviews_df: pd.DataFrame
-    ) -> Tuple[np.ndarray, List[str]]:
-        """
-        Create the document-term matrix (DTM) and vocabulary.
-
-        Args:
-            reviews_df (pd.DataFrame): Dataframe of reviews.
-
-        Returns:
-            Tuple[np.ndarray, List[str]]: DTM and vocabulary.
-        """
-        dtm, vocab = self.create_train_dtm(
-            df=reviews_df, min_df_threshold=self.config.dtm.min_df_threshold
-        )
-        print(f"DTM shape: {dtm.shape}")
-        return dtm, vocab
 
     def train_or_load_lda_model(self, dtm: np.ndarray) -> LDA:
         """
@@ -329,25 +312,3 @@ class Simulation:
         else:
             lda.load_model(lda_model_path)
         return lda
-
-    def generate_results_image(self, lda: LDA, vocab: List[str]) -> None:
-        """
-        Generate the results image using the LDA model.
-
-        Args:
-            lda (LDA): LDA model.
-            vocab (List[str]): Vocabulary.
-
-        Returns:
-            None
-        """
-        result_image_path = os.path.join(
-            self.config.result.results_dir_path, f"{lda.get_model_id()}.png"
-        )
-        self.generate_results(
-            topic_word_counts=lda.topic_word_counts,
-            vocab=vocab,
-            image_path=result_image_path,
-            image_text=lda.get_model_id(),
-            num_of_top_words=self.config.result.top_words,
-        )
