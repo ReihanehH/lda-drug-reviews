@@ -18,9 +18,23 @@ from src.config.yaml import (
 
 
 class TestConfig(unittest.TestCase):
+    """
+    The TestConfig class contains unit tests for various configuration classes and functions.
+    It ensures that these classes and functions correctly initialize with valid parameters,
+    raise appropriate exceptions with invalid parameters, and properly load and parse YAML
+    configuration files. The tests cover attributes verification and exception handling for
+    classes such as TrainConfig, DataConfig, DTMConfig, LDAConfig, ResultConfig, and the
+    load_yaml_config function.
+    """
 
     def test_sampling_config(self):
+        """
+        This method tests the SamplingConfig class to ensure it correctly initializes with valid parameters
+        and raises appropriate exceptions with invalid parameters. It verifies the attributes 'number' and
+        'seed' are set correctly and checks for ValidationError when an invalid 'number' parameter is provided.
+        """
         config = SamplingConfig(number=10, seed=123)
+
         self.assertEqual(config.number, 10)
         self.assertEqual(config.seed, 123)
 
@@ -28,6 +42,12 @@ class TestConfig(unittest.TestCase):
             SamplingConfig(number="invalid", seed=123)
 
     def test_train_config(self):
+        """
+        This method tests the TrainConfig class to ensure it correctly initializes with valid parameters
+        and raises appropriate exceptions with invalid parameters. It verifies the attributes 'cache_dir_path',
+        'path', 'enable_caching', and 'sampling' are set correctly and checks for ValidationError when an
+        invalid 'sampling' parameter is provided.
+        """
         sampling_config = SamplingConfig(**{"number": 10, "seed": 123})
         config = TrainConfig(
             **{
@@ -53,6 +73,12 @@ class TestConfig(unittest.TestCase):
             )
 
     def test_data_config(self):
+        """
+        This method tests the DataConfig class to ensure it correctly initializes with valid parameters
+        and raises appropriate exceptions with invalid parameters. It verifies that the 'train' attribute
+        is set correctly when provided with a valid TrainConfig instance and checks for ValidationError
+        when an invalid 'train' parameter is provided.
+        """
         sampling_config = SamplingConfig(number=10, seed=123)
         train_config = TrainConfig(
             path="data/train", enable_caching=False, sampling=sampling_config
@@ -64,14 +90,22 @@ class TestConfig(unittest.TestCase):
             DataConfig(train="invalid")
 
     def test_dtm_config(self):
+        """
+        This method tests the DTMConfig class to ensure it correctly initializes with valid parameters.
+        It verifies that the 'min_df_threshold' attribute is set correctly when provided with a valid
+        configuration dictionary.
+        """
         map_config = {"min-df-threshold": 0.01}
         config = DTMConfig(**map_config)
         self.assertEqual(config.min_df_threshold, 0.01)
 
-        # with self.assertRaises(ValidationError):
-        #     DTMConfig(**{"min-df-threshold": 0.01})
-
     def test_lda_config(self):
+        """
+        This method tests the LDAConfig class to ensure it correctly initializes with valid parameters
+        and raises appropriate exceptions with invalid parameters. It verifies the attributes 'enable_traning',
+        'models_dir_path', 'topics', 'iterations', 'alpha', and 'beta' are set correctly and checks for
+        ValidationError when an invalid 'topics' parameter is provided.
+        """
         config = LDAConfig(
             **{
                 "enable-traning": True,
@@ -102,6 +136,12 @@ class TestConfig(unittest.TestCase):
             )
 
     def test_result_config(self):
+        """
+        This method tests the ResultConfig class to ensure it correctly initializes with valid parameters
+        and raises appropriate exceptions with invalid parameters. It verifies the attributes 'results_dir_path'
+        and 'top_words' are set correctly and checks for ValidationError when an invalid 'top_words' parameter
+        is provided.
+        """
         config = ResultConfig(**{"results-dir-path": "/tmp/results", "top-words": 20})
         self.assertEqual(config.results_dir_path, "/tmp/results")
         self.assertEqual(config.top_words, 20)
@@ -110,6 +150,12 @@ class TestConfig(unittest.TestCase):
             ResultConfig(**{"results-dir-path": "/tmp/results", "top-words": "invalid"})
 
     def test_config(self):
+        """
+        This method tests the Config class to ensure it correctly initializes with valid parameters
+        and raises appropriate exceptions with invalid parameters. It verifies that the attributes
+        'data', 'dtm', 'lda', and 'result' are set correctly when provided with valid configuration
+        instances and checks for ValidationError when an invalid 'data' parameter is provided.
+        """
         sampling_config = SamplingConfig(**{"number": 10, "seed": 123})
         train_config = TrainConfig(
             **{
@@ -155,6 +201,12 @@ class TestConfig(unittest.TestCase):
             )
 
     def test_load_yaml_config(self):
+        """
+        This method tests the load_yaml_config function to ensure it correctly loads and parses a YAML
+        configuration file into a Config object. It verifies that the attributes of the Config object
+        are set correctly based on the YAML content. The method also checks for appropriate exceptions
+        when the YAML file is missing or contains invalid data.
+        """
         yaml_content = {
             "data": {
                 "train": {
