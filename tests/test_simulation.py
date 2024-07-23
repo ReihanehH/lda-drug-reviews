@@ -101,7 +101,8 @@ class TestSimulation(unittest.TestCase):
         mock_config.result.results_dir_path = "/tmp/results"
 
         # Create an instance of the Simulation class with the mock configuration
-        simulation = Simulation(config=mock_config)
+        simulation = Simulation()
+        simulation.config = mock_config
 
         # Call the method to test
         simulation.ensure_directories_exist()
