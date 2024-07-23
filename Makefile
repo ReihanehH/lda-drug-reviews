@@ -14,6 +14,7 @@ setup-virtualenv:
 # Install dependencies
 install-dependencies: setup-virtualenv
 	$(VENV_DIR)/bin/pip install -r requirements.txt
+	$(VENV_DIR)/bin/python -m nltk.downloader -d ~/nltk_data stopwords
 
 # Run tests
 run-tests: install-dependencies

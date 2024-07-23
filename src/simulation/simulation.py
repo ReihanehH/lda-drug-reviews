@@ -5,7 +5,6 @@ from typing import Tuple
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from nltk import download
 from nltk.corpus import stopwords
 from nltk.stem import PorterStemmer
 from PIL import Image
@@ -257,9 +256,6 @@ class Simulation:
         Returns:
             None
         """
-
-        # Make sure to have stopwords
-        download("stopwords")
 
         # Make sure that cache, models and results directory exist.
         os.makedirs(self.config.data.train.cache_dir_path, exist_ok=True)
