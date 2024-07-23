@@ -42,8 +42,8 @@ words that are used less than %0.5 are removed from the columns of DTM.
 1. `enable-traning` (default: `true`): This field specifies whether training should be done or not. There are times when we already have the model (stored in the models directory) and we just want to run the model and see the results, in this case we leave this part `false`. But if this part is `true`, model will be trained from the beginning.
 2. `num_topics` (default: `3`): The number of clusters or topics to identify within the data.
 3. `iterations` (default: `1000`): The number of iterations over each document.
-4. `alpha` (default: `0.1`): ?
-5. `beta` (default: `0.01`): The number of repetitions of the word on the total number of words in the folder
+4. `alpha` (default: `0.1`): A hyperparameter that influences the sparsity of the topic distribution over documents.
+5. `beta` (default: `0.01`): A hyperparameter that plays a crucial role in shaping the topic distributions.
 
 ### Result parameters
 
@@ -93,7 +93,7 @@ The data cleaning process is a crucial step in preparing the dataset for LDA. Th
 
 ## Results
 
-After running the LDA model with the above configuration, the dataset will be clustered into `3` topics. Each topic represents a set of data points with similar attributes. The results can be used to draw insights and further analyze the underlying patterns within the dataset.
+After running the LDA model with the above configuration told in the paper, the dataset will be clustered into `3` topics. Each topic represents a set of data points with similar attributes. The results can be used to draw insights and further analyze the underlying patterns within the dataset.
 
 ## Conclusion
 
