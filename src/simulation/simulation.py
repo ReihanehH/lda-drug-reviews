@@ -22,8 +22,6 @@ class Simulation:
     It performs data loading, data cleaning, topic modeling, and result generation.
 
     Attributes:
-        models_dir (str): The directory path for storing models.
-        results_dir (str): The directory path for storing results.
         config (dict): The configuration dictionary.
     """
 
