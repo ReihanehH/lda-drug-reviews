@@ -93,7 +93,9 @@ The data cleaning process is a crucial step in preparing the dataset for LDA. Th
 
 ## Results
 
-After running the LDA model with the above configuration told in the paper, the dataset will be clustered into `3` topics. Each topic represents a set of data points with similar attributes. The results can be used to draw insights and further analyze the underlying patterns within the dataset.
+After running the LDA model with the above configurations, as described in the paper, the dataset will be clustered into three topics. Each topic represents a set of data points with similar attributes. The results can be used to draw insights and further analyze the underlying patterns within the dataset. Results are persisted in the `./results` directory and can be viewed in runs.
+
+![result](results/lda_topics-3_it-1000_aplha-0.1_beta-0.01.png)
 
 ## Conclusion
 
