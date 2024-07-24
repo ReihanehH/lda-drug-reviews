@@ -12,6 +12,7 @@ class LDA:
         verbose: bool = True,
         alpha: float = 0.1,
         beta: float = 0.01,
+        random_seed: int = 42,
     ):
         """
         Latent Dirichlet Allocation (LDA) model for topic modeling.
@@ -33,6 +34,7 @@ class LDA:
         self.alpha = alpha
         self.beta = beta
         self.verbose = verbose
+        self.random_seed = random_seed
 
         self.topic_word_counts: np.ndarray = None
         self.train_data_shape: Tuple[int, int] = None
@@ -48,6 +50,8 @@ class LDA:
         Returns:
         None
         """
+        np.random.seed(self.random_seed)
+
         self.train_data_shape = dtm.shape
 
         num_docs, num_words = dtm.shape
