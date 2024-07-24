@@ -302,6 +302,7 @@ class Simulation:
             num_iterations=self.config.lda.iterations,
             alpha=self.config.lda.alpha,
             beta=self.config.lda.beta,
+            random_seed=self.config.lda.seed,
         )
         lda_model_path = os.path.join(
             self.config.lda.models_dir_path, f"{lda.get_model_id()}.pkl"
