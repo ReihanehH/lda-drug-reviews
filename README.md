@@ -45,6 +45,7 @@ words that are used less than %0.5 are removed from the columns of DTM.
 4. `iterations` (default: `1000`): The number of iterations over each document.
 5. `alpha` (default: `0.1`): A hyperparameter that influences the sparsity of the topic distribution over documents.
 6. `beta` (default: `0.01`): A hyperparameter that plays a crucial role in shaping the topic distributions.
+7. `seed` (default: `42`): The random seed to have predictable random sequences in entire fit process.
 
 ### Result parameters
 
