@@ -28,6 +28,8 @@ class LDA:
             The hyperparameter for the Dirichlet prior on the per-document topic distributions.
         - beta: float, optional (default=0.01)
             The hyperparameter for the Dirichlet prior on the per-topic word distributions.
+        - random_seed: optional (default=42)
+            To have predictable random sequences in entire fit process.
         """
         self.num_topics = num_topics
         self.num_iterations = num_iterations

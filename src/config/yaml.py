@@ -83,6 +83,8 @@ class LDAConfig(BaseModel):
             Specifies the alpha value for the LDA model.
         beta (float): Beta value.
             Specifies the beta value for the LDA model.
+        seed (int): random seed value.
+            To have predictable random sequences in entire fit process.
     """
 
     enable_traning: bool = Field(
@@ -95,6 +97,10 @@ class LDAConfig(BaseModel):
     iterations: int = Field(default=5, description="Number of iterations")
     alpha: float = Field(default=0.1, description="Alpha value")
     beta: float = Field(default=0.01, description="Beta value")
+    seed: int = Field(
+        default=42,
+        description="To have predictable random sequences in entire fit process.",
+    )
 
 
 class ResultConfig(BaseModel):

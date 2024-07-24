@@ -103,7 +103,7 @@ class TestConfig(unittest.TestCase):
         """
         This method tests the LDAConfig class to ensure it correctly initializes with valid parameters
         and raises appropriate exceptions with invalid parameters. It verifies the attributes 'enable_traning',
-        'models_dir_path', 'topics', 'iterations', 'alpha', and 'beta' are set correctly and checks for
+        'models_dir_path', 'topics', 'iterations', 'alpha', 'beta', and 'seed' are set correctly and checks for
         ValidationError when an invalid 'topics' parameter is provided.
         """
         config = LDAConfig(
@@ -114,6 +114,7 @@ class TestConfig(unittest.TestCase):
                 "iterations": 100,
                 "alpha": 0.5,
                 "beta": 0.1,
+                "seed": 12,
             }
         )
         self.assertTrue(config.enable_traning)
@@ -122,6 +123,7 @@ class TestConfig(unittest.TestCase):
         self.assertEqual(config.iterations, 100)
         self.assertEqual(config.alpha, 0.5)
         self.assertEqual(config.beta, 0.1)
+        self.assertEqual(config.seed, 12)
 
         with self.assertRaises(ValidationError):
             LDAConfig(
@@ -132,6 +134,7 @@ class TestConfig(unittest.TestCase):
                     "iterations": 100,
                     "alpha": 0.5,
                     "beta": 0.1,
+                    "seed": 12,
                 }
             )
 
@@ -173,6 +176,7 @@ class TestConfig(unittest.TestCase):
                 "iterations": 100,
                 "alpha": 0.5,
                 "beta": 0.1,
+                "seed": 12,
             }
         )
         result_config = ResultConfig(**{"top-words": 20})
@@ -224,6 +228,7 @@ class TestConfig(unittest.TestCase):
                 "iterations": 100,
                 "alpha": 0.5,
                 "beta": 0.1,
+                "seed": 12,
             },
             "result": {"results-dir-path": "/tmp/results", "top-words": 20},
         }
@@ -244,6 +249,7 @@ class TestConfig(unittest.TestCase):
             self.assertEqual(config.lda.iterations, 100)
             self.assertEqual(config.lda.alpha, 0.5)
             self.assertEqual(config.lda.beta, 0.1)
+            self.assertEqual(config.lda.seed, 12)
             self.assertEqual(config.result.top_words, 20)
             self.assertEqual(config.result.results_dir_path, "/tmp/results")
             os.remove(temp_file.name)
